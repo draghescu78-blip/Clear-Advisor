@@ -426,6 +426,26 @@ body.dark .header {
   }
 
 }
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* săgeata */
+.back-btn {
+  font-size: 22px;
+  cursor: pointer;
+  display: none;
+  opacity: 0.85;
+}
+
+/* DOAR PE TELEFON */
+@media (max-width: 768px) {
+  .back-btn {
+    display: block;
+  }
+}
 
 </style>
 </head>
@@ -435,13 +455,17 @@ body.dark .header {
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-    <h3>DRASTORM</h3>
-    <a href="#" onclick="showPage('advisor')">🧼 Home</a>
-    <a href="#" onclick="showPage('history')">🕒 Istoric</a>
-    <a href="#" onclick="showPage('ai')">🤖 AI Assistant</a>
+    <div class="sidebar-header">
+  <span class="back-btn" onclick="toggleSidebar()">←</span>
+  <h3>DRASTORM</h3>
+</div>
+
+    <a href="#" onclick="showPage('advisor'); toggleSidebar()">🧼 Home</a>
+    <a href="#" onclick="showPage('history'); toggleSidebar()">🕒 Istoric</a>
+    <a href="#" onclick="showPage('ai'); toggleSidebar()">🤖 AI Assistant</a>
     <a href="https://www.facebook.com/p/Drastorm-Produse-de-cur%C4%83%C8%9Benie-61556579918590/" target="_blank">
   📘 Facebook 
-  <a href="#" onclick="showPage('about')">🏪 Despre noi</a>
+  <a href="#" onclick="showPage('about'); toggleSidebar()">🏪 Despre noi</a>
   <a href="#" class="contact-btn" onclick="callPhone()">
   📞 Sună-ne acum
 </a>
