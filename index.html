@@ -6,6 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+  html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 /* ===== GENERAL ===== */
 body {
     font-family: 'Segoe UI', sans-serif;
@@ -84,6 +89,7 @@ body::before {
     align-items: center;
     padding: 0 25px;
     border-bottom: 1px solid rgba(0,0,0,0.08);
+    
 }
 
 .topbar .actions {
@@ -408,8 +414,49 @@ body.dark .header {
   color: #e53935;
 }
 
-/* ===== MOBILE ===== */
-@media (max-width: 768px) {
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* săgeata */
+.back-btn {
+  font-size: 22px;
+  cursor: pointer;
+  display: none;
+  opacity: 0.85;
+}
+
+
+
+.search-box input {
+  width: 420px;
+  max-width: 100%;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  font-size: 14px;
+  outline: none;
+}
+
+.search-box input:focus {
+  border-color: #ff9800;
+  box-shadow: 0 0 0 2px rgba(255,152,0,0.15);
+}
+
+/* ============================= */
+/* RESPONSIVE SIDEBAR LOGIC */
+/* ============================= */
+
+/* Desktop mare – implicit */
+.hamburger {
+  display: none;
+}
+
+/* Sub 1100px: laptop mic + tablet + telefon */
+@media (max-width: 1100px) {
 
   .sidebar {
     transform: translateX(-100%);
@@ -425,27 +472,12 @@ body.dark .header {
     margin-left: 0;
   }
 
-}
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* săgeata */
-.back-btn {
-  font-size: 22px;
-  cursor: pointer;
-  display: none;
-  opacity: 0.85;
-}
-
-/* DOAR PE TELEFON */
-@media (max-width: 768px) {
-  .back-btn {
-    display: block;
+  .hamburger {
+    display: flex;
   }
 }
+
+
 
 </style>
 </head>
@@ -479,10 +511,13 @@ body.dark .header {
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="top-btn" onclick="toggleSidebar()">☰</div>
+  <div class="top-btn hamburger" onclick="toggleSidebar()">☰</div>
 
   <div class="brand">Clean Advisor</div>
     <div id="user-email" style="margin-right:10px; font-size:14px; opacity:0.85;"></div>
+<div class="search-box">
+  <input type="text" placeholder="Caută produse sau probleme (ex: calcar, baie)">
+</div>
 
   <div class="actions">
     <div id="btn-dark" class="top-btn" onclick="toggleDarkMode()" title="Dark mode">
@@ -523,20 +558,26 @@ body.dark .header {
 <div id="step1" style="display:none;">
     <h3>Ce vrei să cureți?</h3>
     <select id="surface" onchange="goToStep2()">
-        <option disabled selected>Alege...</option>
-        <option>Baie</option>
-        <option>Bucătărie</option>
-        <option>Podea</option>
-    </select>
+  <option disabled selected>Alege...</option>
+  <option>Baie</option>
+  <option>Bucătărie</option>
+  <option>Podele</option>
+  <option>Geamuri</option>
+</select>
+
+
 </div>
 
 <div id="step2" style="display:none;">
-    <h3>Problema?</h3>
+    <h3>Ce vrei să cureți mai exact?</h3>
     <select id="problem" onchange="goToStep3()">
-        <option disabled selected>Alege...</option>
-        <option>Calcar</option>
-        <option>Grăsime</option>
-    </select>
+    <option disabled selected>Alege...</option>
+    <option>Depuneri de calcar</option>
+    <option>Urme de săpun / pete</option>
+    <option>Mizerie generală</option>
+    <option>Mucegai</option>
+</select>
+
 </div>
 
 <div id="step3" style="display:none;">
@@ -738,11 +779,29 @@ function goToStep3() {
 }
 
 function showResult() {
-    document.getElementById('recommendation').innerText =
-        "Recomandăm o soluție DRASTORM potrivită pentru problema aleasă.";
-    document.getElementById('result').style.display = 'block';
-    saveToHistory(text);
+  const problem = document.getElementById("problem").value;
+  const level = document.getElementById("level").value;
 
+  let text = "Recomandare generală pentru baie.";
+
+  if (problem === "Depuneri de calcar") {
+    text = "Recomandare: soluție anticalcar pentru baie.";
+  }
+
+  if (problem === "Mucegai") {
+    text = "Recomandare: soluție specială anti-mucegai. Aerisește bine.";
+  }
+
+  if (problem === "Nu sunt sigur") {
+    text = "Recomandare: soluție sigură pentru baie, testată pe o zonă mică.";
+  }
+
+  if (level === "Foarte murdar") {
+    text += " Pentru murdărie persistentă, folosește o soluție mai concentrată.";
+  }
+
+  document.getElementById("recommendation").innerText = text;
+  document.getElementById("result").style.display = "block";
 }
 
 async function sendMessage() {
