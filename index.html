@@ -19,17 +19,28 @@ body {
 }
 
 body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background:
-        linear-gradient(120deg, rgba(255,165,0,0.08) 1px, transparent 1px),
-        linear-gradient(300deg, rgba(138,43,226,0.08) 1px, transparent 1px),
-        radial-gradient(circle at top right, rgba(138,43,226,0.18), transparent 40%),
-        radial-gradient(circle at bottom left, rgba(255,165,0,0.18), transparent 40%);
-    background-size: 80px 80px, 80px 80px, 100% 100%, 100% 100%;
-    z-index: -1;
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,152,0,0.22), transparent 35%),
+    radial-gradient(circle at 85% 80%, rgba(138,43,226,0.22), transparent 40%),
+    linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%);
+
+  animation: bgMove 18s ease-in-out infinite alternate;
 }
+
+@keyframes bgMove {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(8deg);
+  }
+}
+
 
 /* ===== LAYOUT ===== */
 .app {
@@ -139,6 +150,20 @@ body::before {
   position: relative;
   overflow: hidden;
 }
+.header1 {
+  animation: heroFade 0.9s ease-out both;
+}
+
+@keyframes heroFade {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 
 
 .logo {
@@ -156,6 +181,26 @@ body::before {
 .hero-text {
     max-width: 420px;
     text-align: left;
+}
+
+.hero-text h1,
+.hero-text p {
+  animation: textSlide 0.8s ease-out both;
+}
+
+.hero-text p {
+  animation-delay: 0.15s;
+}
+
+@keyframes textSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .hero-text h1 {
@@ -183,6 +228,33 @@ button {
     cursor: pointer;
     font-weight: 600;
     margin-top: 10px;
+}
+button {
+  position: relative;
+  overflow: hidden;
+}
+
+button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.35) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+}
+
+button:hover::after {
+  animation: shine 0.8s ease;
+}
+
+@keyframes shine {
+  to {
+    transform: translateX(100%);
+  }
 }
 
 /* CARD */
@@ -316,6 +388,24 @@ body.dark .about-card {
   margin-bottom: 10px;
   color: #ff9800;
 }
+.feature-card,
+.step,
+.about-card {
+  opacity: 0;
+  transform: translateY(25px);
+  animation: cardUp 0.8s ease forwards;
+}
+
+.feature-card:nth-child(1) { animation-delay: 0.1s; }
+.feature-card:nth-child(2) { animation-delay: 0.25s; }
+.feature-card:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes cardUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 /* Steps */
 .steps {
@@ -356,6 +446,13 @@ body.dark .header {
     radial-gradient(circle at bottom right, rgba(138,43,226,0.22), transparent 45%),
     linear-gradient(135deg, rgba(20,20,40,0.95), rgba(30,30,60,0.95));
 }
+body.dark::before {
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,122,24,0.18), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(138,43,226,0.25), transparent 45%),
+    linear-gradient(135deg, #0f1020, #1a1b3a);
+}
+
 /* === BUTOANE TOPBAR === */
 .top-btn {
   width: 38px;
@@ -446,21 +543,44 @@ body.dark .header {
   box-shadow: 0 0 0 2px rgba(255,152,0,0.15);
 }
 
-/* ============================= */
-/* RESPONSIVE SIDEBAR LOGIC */
-/* ============================= */
 
-/* Desktop mare – implicit */
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  background: linear-gradient(180deg, #2b1055, #1a0736);
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+/* desktop mare */
+.main {
+  margin-left: 260px;
+}
+
+/* hamburger */
 .hamburger {
   display: none;
 }
 
-/* Sub 1100px: laptop mic + tablet + telefon */
-@media (max-width: 1100px) {
+/* overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.20);
+  display: none;
+  z-index: 900;
+}
 
+/* ================= */
+/* sub 1100px */
+/* ================= */
+@media (max-width: 1100px) {
   .sidebar {
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
     z-index: 1000;
   }
 
@@ -475,36 +595,158 @@ body.dark .header {
   .hamburger {
     display: flex;
   }
+
+  .sidebar.active + .overlay {
+    display: block;
+  }
 }
 
+.footer {
+  margin-top: auto;
+  padding: 16px 20px;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.7;
 
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+/* Dark mode */
+body.dark .footer {
+  background: rgba(20,20,40,0.9);
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.footer {
+  background: linear-gradient(180deg, #1a0736, #0f0222);
+  color: #ddd;
+  padding: 60px 20px 20px;
+  margin-top: 80px;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+}
+
+.footer-col h3,
+.footer-col h4 {
+  color: #ff9800;
+  margin-bottom: 12px;
+}
+
+.footer-col p,
+.footer-col a {
+  font-size: 14px;
+  color: #ccc;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+.footer-col a:hover {
+  color: #fff;
+  opacity: 1;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin-top: 40px;
+  padding-top: 15px;
+  text-align: center;
+  font-size: 13px;
+  color: #aaa;
+}
+
+/* Dark mode compatibil */
+body.dark .footer {
+  background: linear-gradient(180deg, #0c0620, #080314);
+}
+
+.about-gallery-card {
+  margin-top: 40px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.12);
+  text-align: center;
+}
+
+.about-gallery-card h3 {
+  color: #ff9800;
+  margin-bottom: 20px;
+}
+
+.gallery {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  height: 360px;
+  margin: auto;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.gallery-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.gallery-img.active {
+  opacity: 1;
+}
+
+/* Dark mode */
+body.dark .about-gallery-card {
+  background: rgba(25,25,45,0.95);
+}
 
 </style>
+
+
 </head>
+
+
 
 <body>
 <div class="app">
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-    <div class="sidebar-header">
-  <span class="back-btn" onclick="toggleSidebar()">←</span>
-  <h3>DRASTORM</h3>
-</div>
+  <div class="sidebar-header">
+    <span class="back-btn" onclick="closeSidebar()">←</span>
+    <h3>DRASTORM</h3>
+  </div>
 
-    <a href="#" onclick="showPage('advisor'); toggleSidebar()">🧼 Home</a>
-    <a href="#" onclick="showPage('history'); toggleSidebar()">🕒 Istoric</a>
-    <a href="#" onclick="showPage('ai'); toggleSidebar()">🤖 AI Assistant</a>
-    <a href="https://www.facebook.com/p/Drastorm-Produse-de-cur%C4%83%C8%9Benie-61556579918590/" target="_blank">
-  📘 Facebook 
-  <a href="#" onclick="showPage('about'); toggleSidebar()">🏪 Despre noi</a>
+  <a href="#" onclick="showPage('advisor'); closeSidebar()">🧼 Home</a>
+  <a href="#" onclick="showPage('history'); closeSidebar()">🕒 Istoric</a>
+  <a href="#" onclick="showPage('ai'); closeSidebar()">🤖 AI Assistant</a>
+
+  <a href="https://www.facebook.com/p/Drastorm-Produse-de-curățenie-61556579918590/"
+     target="_blank">
+    📘 Facebook
+  </a>
+
+  <a href="#" onclick="showPage('about'); closeSidebar()">🏪 Despre noi</a>
+
   <a href="#" class="contact-btn" onclick="callPhone()">
-  📞 Sună-ne acum
-</a>
-
-</a>
-
+    📞 Sună-ne acum
+  </a>
 </div>
+
+<div class="overlay" onclick="closeSidebar()"></div>
+
 
 <!-- MAIN -->
 <div class="main">
@@ -667,13 +909,22 @@ body.dark .header {
 <div id="page-about" class="section" style="display:none;">
     
   <h2>🏪 Despre DRASTORM</h2>
+<div class="about-gallery-card">
+  <h3>📸 Magazinul nostru</h3>
+
+  <div class="gallery">
+    <img src="c:\Users\Cătălin Drăghescu\Desktop\clean advisor\IMG_8585.JPG" class="gallery-img active">
+    <img src="c:\Users\Cătălin Drăghescu\Desktop\clean advisor\IMG_8616.JPG" class="gallery-img">
+    <img src="c:\Users\Cătălin Drăghescu\Desktop\clean advisor\WhatsApp Image 2024-04-25 at 00.08.19_dc5ef84b.jpg" class="gallery-img">
+  </div>
+</div>
 
   <div class="about-grid">
     
     <div class="about-card">
       <h3>🧼 Cine suntem</h3>
       <p>
-        DRASTORM este un magazin specializat în produse profesionale de curățenie,
+        DRASTORM este un magazin specializat în produse de curățenie,
         creat pentru cei care vor rezultate rapide, sigure și eficiente.
         Oferim soluții testate, folosite atât în gospodării, cât și în spații comerciale.
       </p>
@@ -1022,8 +1273,71 @@ function toggleSidebar() {
   document.querySelector(".sidebar").classList.toggle("active");
 }
 
+function closeSidebar() {
+  document.querySelector(".sidebar").classList.remove("active");
+}
+
+document.getElementById("year").textContent = new Date().getFullYear();
+
+
+let galleryIndex = 0;
+
+function startGallery() {
+  const images = document.querySelectorAll(".gallery-img");
+  if (!images.length) return;
+
+  images.forEach(img => img.classList.remove("active"));
+  images[galleryIndex].classList.add("active");
+
+  galleryIndex = (galleryIndex + 1) % images.length;
+}
+
+setInterval(startGallery, 3500);
 
 </script>
+
+<footer class="footer">
+  <div class="footer-container">
+
+    <div class="footer-col">
+      <h3>DRASTORM</h3>
+      <p>
+        Produse de curățenie și recomandări sigure,
+        bazate pe experiență reală.
+      </p>
+    </div>
+
+    
+
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>📞 0720 714 163</p>
+      <p>✉️ drastorm13@yahoo.com</p>
+      <a href="https://www.facebook.com/p/Drastorm-Produse-de-cur%C4%83%C8%9Benie-61556579918590/" target="_blank">
+        📘 Facebook
+      </a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Clean Advisor</h4>
+      <p>🧠 Recomandări inteligente</p>
+      <p>🤖 AI Assistant</p>
+      <p>🧼 Curățenie sigură</p>
+    </div>
+
+  </div>
+  <div class="footer-col">
+      <h4>Magazin</h4>
+      <a href="#" onclick="showPage('about')">Despre noi</a>
+      <p>📍 Aleea pietonală 8 Mai</p>
+      <p>⏰ L–V: 08:30 – 19:00</p>
+      <p>   S–D: 08:30 – 14:30</p>
+    </div>
+
+  <div class="footer-bottom">
+   © <span id="year"></span> <strong>DRASTORM S.R.L.</strong> · Clean Advisor. Toate drepturile rezervate.
+  </div>
+</footer>
 
 </body>
 </html>
