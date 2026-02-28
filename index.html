@@ -65,7 +65,27 @@ body::before {
   
 
 }
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  opacity: 0.85;
+  font-size: 15px;
+}
 
+.sidebar a .label {
+  white-space: nowrap;
+}
+
+.sidebar a:hover {
+  background: rgba(255,255,255,0.15);
+  opacity: 1;
+}
 .sidebar h3 {
     margin-bottom: 20px;
 }
@@ -558,6 +578,8 @@ body.dark::before {
   box-shadow: 0 0 0 2px rgba(255,152,0,0.15);
 }
 
+.search-box { position: relative; }
+
 
 /* SIDEBAR */
 .sidebar {
@@ -806,86 +828,360 @@ body.dark .about-gallery-card {
   box-sizing: border-box;
 }
 
-/* ===== SETTINGS PAGE ===== */
-.settings-layout {
-  display: flex;
-  gap: 30px;
+/* ===== SETTINGS (UI curat) ===== */
+.settings-layout{
+  display:flex;
+  gap:18px;
+  align-items:flex-start;
 }
 
-.settings-menu {
-  width: 220px;
+.settings-menu{
+  width:min(360px, 92vw);
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 22px;
+  padding: 14px;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.10);
+}
+
+.settings-title{
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: 1px;
+  opacity: 0.7;
+  margin: 6px 10px 12px;
+}
+
+.settings-tab{
+  width:100%;
+  text-align:left;
+  margin: 8px 0;
+  padding: 14px 14px;
+  border-radius: 16px;
+  border: none;
+  background: rgba(0,0,0,0.06);
+  font-weight: 800;
+  cursor:pointer;
+}
+
+.settings-tab.active,
+.settings-tab:hover{
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  color:#fff;
+}
+
+.settings-content{
+  flex:1;
+  min-width: 0;
+}
+
+/* IMPORTANT: ascundem toate panelurile */
+.settings-panel{
+  display:none;
+  animation: fadeSlide 0.25s ease;
+}
+
+/* arătăm doar pe cel activ */
+.settings-panel.active{
+  display:block;
+}
+
+.settings-h2{
+  margin: 6px 0 6px;
+  font-size: 30px;
+}
+
+.settings-sub{
+  margin: 0 0 14px;
+  opacity: 0.75;
+}
+
+/* ===== SETTINGS CARD HEADER (ca la preferințe) ===== */
+.settings-card-head{
   display: flex;
-  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 14px 12px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255,152,0,0.16), rgba(255,87,34,0.10));
+  border: 1px solid rgba(255,152,0,0.22);
+  margin-bottom: 12px;
+}
+
+.settings-card-head h4{
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 900;
+  color: #ff7a18;
+}
+
+.settings-card-head p{
+  margin: 4px 0 0;
+  font-size: 13px;
+  opacity: 0.75;
+}
+/* FIX Preferințe / Settings cards (fără bandă portocalie pe stânga) */
+.settings-card{
+  border-left: none !important;
+  width: 100%;
+  max-width: 520px;          /* aceeași lățime pentru toate */
+  margin: 16px 0;            /* spacing curat */
+  padding: 18px;             /* un pic mai compact */
+}
+
+/* pe mobil să fie full */
+@media (max-width: 768px){
+  .settings-card{
+    max-width: 100%;
+  }
+}
+.icon-badge{
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  color: #fff;
+  font-size: 18px;
+  box-shadow: 0 10px 22px rgba(255,87,34,0.22);
+}
+
+.settings-card-body{
+  display: grid;
   gap: 10px;
 }
 
-.settings-menu button {
-  padding: 12px;
-  border: none;
-  background: rgba(184, 179, 176, 0.6);
+/* ===== HELP ROWS ===== */
+.help-row{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.04);
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgba(0,0,0,0.06);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.help-row:hover{
+  background: rgba(255,152,0,0.10);
+  transform: translateY(-1px);
+}
+
+.help-row.warn{
+  background: rgba(255, 82, 82, 0.08);
+  border-color: rgba(255, 82, 82, 0.18);
+}
+
+.help-ico{
+  width: 34px;
+  height: 34px;
   border-radius: 12px;
-  cursor: pointer;
-  text-align: left;
-  font-weight: 600;
-  transition: all 0.25s ease;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(255,152,0,0.12);
+  font-size: 16px;
 }
 
-.settings-menu button.active,
-.settings-menu button:hover {
-  background: linear-gradient(135deg, #ff9800, #ff5722);
-  color: white;
-}
-
-.settings-content {
-  flex: 1;
-}
-
-.settings-panel {
-  display: none;
-  animation: fadeSlide 0.4s ease;
-}
-
-.settings-panel.active {
-  display: block;
-}
-
-.settings-card {
-  background: rgba(255,255,255,0.9);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-}
-
-/* animație */
-@keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.help-text{
+  font-size: 14px;
+  line-height: 1.25;
 }
 
 /* Dark mode */
-body.dark .settings-card {
-  background: rgba(25,25,45,0.95);
+body.dark .settings-card-head{
+  background: linear-gradient(135deg, rgba(255,152,0,0.10), rgba(138,43,226,0.10));
+  border-color: rgba(255,255,255,0.10);
 }
 
-#history-timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+body.dark .help-row{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.10);
 }
 
-.history-card {
-  background: white;
-  padding: 20px;
+body.dark .help-row:hover{
+  background: rgba(255,152,0,0.14);
+}
+
+body.dark .help-ico{
+  background: rgba(255,152,0,0.16);
+}
+
+.settings-btn{
+  border:none;
   border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  animation: fadeSlide 0.4s ease;
+  padding: 12px 14px;
+  font-weight: 900;
+  cursor:pointer;
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  color:#fff;
+  width: 100%;
+}
+
+.settings-btn.danger{
+  background: linear-gradient(135deg, #ff5252, #e53935);
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.label-small{ font-size: 12px; opacity: 0.7; font-weight: 800; }
+.value-big{ font-size: 20px; font-weight: 900; margin-top: 6px; }
+
+.pref-item{ display:flex; flex-direction:column; gap:10px; }
+.pref-title{ font-weight: 900; }
+.pref-select{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.15);
+  outline: none;
+}
+
+.help-line{ padding: 8px 0; font-weight: 700; }
+.help-line.warn{ opacity: 0.9; }
+
+/* MOBILE: menu sus, conținut jos */
+@media (max-width: 768px){
+  .settings-layout{ flex-direction:column; }
+  .settings-card{ width: 100%; }
+}
+
+/* Dark mode */
+body.dark .settings-menu,
+body.dark .settings-card{
+  background: rgba(20,20,40,0.92);
+  border-color: rgba(255,255,255,0.10);
+}
+body.dark .settings-tab{ background: rgba(255,255,255,0.08); color:#fff; }
+body.dark .pref-select{
+  background: #1c1d3a;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+/* ===== FAQ / PROBLEME FRECVENTE ===== */
+.faq-toolbar{
+  max-width: 900px;
+  margin: 18px 0 18px;
+}
+
+.faq-toolbar input{
+  width: min(520px, 100%);
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.12);
+  outline: none;
+}
+
+.faq-toolbar input:focus{
+  border-color: #ff9800;
+  box-shadow: 0 0 0 2px rgba(255,152,0,0.15);
+}
+
+.faq-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  margin-top: 10px;
+}
+
+.faq-card{
+  background: rgba(255,255,255,0.92);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border-left: 5px solid #ff9800;
+}
+
+.faq-card h3{
+  margin: 0 0 10px;
+  color: #ff9800;
+  font-size: 16px;
+}
+
+.faq-card p{
+  margin: 0 0 12px;
+  line-height: 1.55;
+  color: rgba(0,0,0,0.78);
+  font-size: 14px;
+}
+
+.faq-tags{
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.faq-tag{
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,152,0,0.12);
+  color: #8a4b00;
+  font-weight: 700;
+}
+
+.faq-actions{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.faq-btn{
+  border: none;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.faq-btn:active{ transform: scale(0.98); }
+
+.faq-btn.primary{
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  color: white;
+  box-shadow: 0 10px 24px rgba(255,87,34,0.22);
+}
+
+.faq-btn.ghost{
+  background: rgba(0,0,0,0.06);
+}
+
+/* dark mode */
+body.dark .faq-card{
+  background: rgba(25,25,45,0.95);
+  border-left-color: #ff7a18;
+}
+
+body.dark .faq-card p{
+  color: rgba(255,255,255,0.82);
+}
+
+body.dark .faq-toolbar input{
+  background: #1c1d3a;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+body.dark .faq-btn.ghost{
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+}
+
+body.dark .faq-tag{
+  background: rgba(255,122,24,0.16);
+  color: #ffd9b5;
 }
 
 .history-card small {
@@ -969,15 +1265,504 @@ body.dark .settings-card {
   transform: translateY(0);
 }
 
+/* ===== COOKIE BANNER ===== */
+.cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(135deg, #1b0f35, #230f47);
+  color: #fff;
+  padding: 18px 20px;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.25);
+}
 
+.cookie-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.cookie-content p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.cookie-content a {
+  color: #ff9800;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cookie-accept {
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cookie-accept:hover {
+  opacity: 0.9;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .cookie-content {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* ===== GDPR MODAL (CENTER) ===== */
+.gdpr-overlay{
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 99999;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+}
+
+.gdpr-overlay.show{
+  display: flex;
+  animation: gdprFade 0.25s ease-out both;
+}
+
+@keyframes gdprFade{
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.gdpr-modal{
+  width: min(560px, 96vw);
+  background:
+    radial-gradient(circle at top left, rgba(255,152,0,0.20), transparent 45%),
+    radial-gradient(circle at bottom right, rgba(138,43,226,0.18), transparent 45%),
+    rgba(255,255,255,0.92);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 22px;
+  box-shadow: 0 25px 70px rgba(0,0,0,0.28);
+  padding: 22px 22px 18px;
+  transform: translateY(14px) scale(0.98);
+  animation: gdprPop 0.35s ease-out both;
+}
+
+@keyframes gdprPop{
+  to { transform: translateY(0) scale(1); }
+}
+
+.gdpr-modal h3{
+  margin: 0 0 10px;
+  font-size: 20px;
+  letter-spacing: 0.2px;
+}
+
+.gdpr-text{
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(0,0,0,0.78);
+}
+
+.gdpr-options{
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 10px;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.65);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.gdpr-check{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.gdpr-check input{
+  width: 18px;
+  height: 18px;
+  accent-color: #ff9800;
+}
+
+.gdpr-links{
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 10px 0 16px;
+}
+
+.gdpr-links a{
+  color: #ff9800;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 13.5px;
+}
+
+.gdpr-links a:hover{ text-decoration: underline; }
+
+.gdpr-actions{
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.gdpr-btn{
+  border: none;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.gdpr-btn:active{ transform: scale(0.97); }
+
+.gdpr-btn.ghost{
+  background: rgba(0,0,0,0.06);
+}
+
+.gdpr-btn.primary{
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(255,87,34,0.28);
+}
+
+/* Dark mode compatibil */
+body.dark .gdpr-modal{
+  background:
+    radial-gradient(circle at top left, rgba(255,152,0,0.18), transparent 45%),
+    radial-gradient(circle at bottom right, rgba(138,43,226,0.22), transparent 45%),
+    rgba(20,20,40,0.95);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+body.dark .gdpr-text{ color: rgba(255,255,255,0.82); }
+body.dark .gdpr-options{ background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.08); }
+body.dark .gdpr-btn.ghost{ background: rgba(255,255,255,0.10); color: #fff; }
+
+.search-item{
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 14px;
+}
+
+.search-item:hover{
+  background: rgba(255,152,0,0.14);
+}
+
+body.dark .search-item:hover{
+  background: rgba(255,152,0,0.16);
+}
+
+/* pe mobil ascundem search-box din topbar */
+@media (max-width: 768px) {
+  .search-box { display: none !important; }
+  .mobile-search-btn { display: flex !important; }
+}
+
+/* pe desktop nu arătăm lupa */
+.mobile-search-btn { display: none; }
+
+/* overlay mobil */
+.mobile-search-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+}
+
+.mobile-search-overlay.show{ display:flex; }
+
+.mobile-search-modal{
+  width: min(560px, 96vw);
+  background: rgba(255,255,255,0.92);
+  border-radius: 22px;
+  box-shadow: 0 25px 70px rgba(0,0,0,0.28);
+  border: 1px solid rgba(255,255,255,0.5);
+  padding: 16px;
+}
+
+.mobile-search-head{
+  display:flex;
+  align-items:center;
+  justify-content: center;
+  margin-bottom: 14px;
+  font-size: 18px;
+}
+
+.mobile-search-close{
+  border: none;
+  background: rgba(0,0,0,0.06);
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.mobile-search-input-wrap{
+  position: relative;
+}
+
+#mobile-search-input{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.12);
+  outline: none;
+  font-size: 14px;
+}
+
+#mobile-search-input:focus{
+  border-color: #ff9800;
+  box-shadow: 0 0 0 2px rgba(255,152,0,0.15);
+}
+
+/* rezultatele (folosim stilul tău existent) */
+.mobile-results{
+  position: static;          /* în modal, nu mai e absolute */
+  margin-top: 10px;
+  display: none;
+  border-radius: 16px;
+}
+
+/* dark mode */
+body.dark .mobile-search-modal{
+  background: rgba(20,20,40,0.95);
+  border-color: rgba(255,255,255,0.10);
+}
+
+body.dark #mobile-search-input{
+  background: #1c1d3a;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+body.dark .mobile-search-close{
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+}
+/* user email default (desktop) */
+.user-email{
+  margin-right: 10px;
+  font-size: 14px;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+/* MOBILE TOPBAR CLEAN */
+@media (max-width: 768px) {
+
+  /* ascunde email-ul */
+  .user-email{
+    display: none !important;
+  }
+
+  /* ascunde search-box (ai zis deja) */
+  .search-box{
+    display: none !important;
+  }
+
+  /* topbar layout */
+  .topbar{
+    display: grid !important;
+    grid-template-columns: 44px 1fr auto; /* hamburger | brand | icons */
+    align-items: center;
+    padding: 0 12px;
+  }
+
+  /* brand centrat */
+  .brand{
+    justify-self: center;
+    text-align: center;
+    font-size: 16px;
+  }
+
+  /* icons în dreapta */
+  .actions{
+    justify-self: end;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+/* USER TYPE MODAL */
+.usertype-modal{
+  width: min(620px, 96vw);
+}
+
+.usertype-actions{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.usertype-actions .gdpr-btn{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  font-weight: 900;
+}
+
+/* pe mobil, butoane pe coloană */
+@media (max-width: 520px){
+  .usertype-actions{
+    grid-template-columns: 1fr;
+  }
+}
+/* ===== PREFERINTE ORANGE STYLE ===== */
+
+.pref-card{
+  border-left: 6px solid #ff9800;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pref-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 18px 45px rgba(255,87,34,0.15);
+}
+
+.pref-head{
+  font-weight: 900;
+  font-size: 17px;
+  margin-bottom: 6px;
+  color: #ff5722;
+}
+
+.pref-desc{
+  font-size: 14px;
+  opacity: 0.75;
+  margin-bottom: 14px;
+}
+
+.pref-select-orange{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid rgba(255,152,0,0.4);
+  font-weight: 700;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.pref-select-orange:focus{
+  border-color: #ff5722;
+  box-shadow: 0 0 0 3px rgba(255,87,34,0.2);
+}
+/* ===== DARK MODE: ACCOUNT CARD ===== */
+body.dark .account-card{
+  background: rgba(20,20,40,0.92);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 20px 55px rgba(0,0,0,0.45);
+}
+
+body.dark .account-card .avatar{
+  /* păstrezi portocaliul, dar arată mai "glow" pe dark */
+  box-shadow: 0 12px 28px rgba(255,152,0,0.25);
+}
+
+body.dark .account-card button{
+  /* butoanele tale rămân portocalii/roșii, dar cu umbră mai ok pe dark */
+  box-shadow: 0 12px 26px rgba(0,0,0,0.35);
+}
+
+body.dark .account-card .danger{
+  box-shadow: 0 12px 26px rgba(0,0,0,0.35);
+}
 </style>
 
 
 </head>
 
 
-
 <body>
+  
+<!-- GDPR CONSENT MODAL -->
+<div id="gdpr-overlay" class="gdpr-overlay" aria-hidden="true">
+  <div class="gdpr-modal" role="dialog" aria-modal="true" aria-labelledby="gdpr-title">
+    <h3 id="gdpr-title">🍪 Setări cookie-uri</h3>
+
+    <p class="gdpr-text">
+      Folosim cookie-uri pentru funcționarea site-ului (necesare) și, doar cu acordul tău,
+      pentru analiză (Google Analytics) ca să îmbunătățim experiența.  
+      Poți schimba oricând opțiunile din setări.
+    </p>
+
+    <div class="gdpr-options">
+      <label class="gdpr-check">
+        <input type="checkbox" checked disabled>
+        <span><strong>Necesare</strong> (obligatorii)</span>
+      </label>
+
+      <label class="gdpr-check">
+        <input id="gdpr-analytics" type="checkbox">
+        <span><strong>Analitice</strong> (Google Analytics)</span>
+      </label>
+    </div>
+
+    <div class="gdpr-links">
+      <a href="privacy.html" target="_blank">Politica de confidențialitate</a>
+      <a href="terms.html" target="_blank">Termeni și condiții</a>
+    </div>
+
+    <div class="gdpr-actions">
+      <button class="gdpr-btn ghost" onclick="gdprReject()">Refuz</button>
+      <button class="gdpr-btn ghost" onclick="gdprNecessary()">Doar necesare</button>
+      <button class="gdpr-btn primary" onclick="gdprAcceptAll()">Accept toate</button>
+    </div>
+  </div>
+</div>
+
+<!-- USER TYPE MODAL (AFTER COOKIES) -->
+<div id="user-type-overlay" class="gdpr-overlay" aria-hidden="true">
+  <div class="gdpr-modal usertype-modal" role="dialog" aria-modal="true" aria-labelledby="usertype-title">
+    
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+      <!-- pune logo-ul tău aici -->
+      <img src="logo.png" alt="DRASTORM" style="height:44px; width:auto;">
+      <div>
+        <h3 id="usertype-title" style="margin:0;">👤 Alege tipul de utilizator</h3>
+        <p style="margin:6px 0 0; font-size:13.5px; opacity:0.8;">
+          Ca să-ți oferim recomandări potrivite (acasă vs. firmă).
+        </p>
+      </div>
+    </div>
+
+    <div class="usertype-actions">
+      <button id="btn-personal" class="gdpr-btn primary" onclick="chooseUserType('personal')">🏠 Persoană fizică</button>
+      <button id="btn-business" class="gdpr-btn ghost" onclick="chooseUserType('business')">🏢 Persoană juridică</button>
+    </div>
+
+    <div style="margin-top:12px; font-size:12.5px; opacity:0.75; line-height:1.5;">
+      Poți schimba oricând alegerea din setări (o să adăugăm acolo un buton “Schimbă tip utilizator”).
+    </div>
+
+  </div>
+</div>
+
 <div class="app">
 
 <!-- SIDEBAR -->
@@ -990,6 +1775,10 @@ body.dark .settings-card {
   <a href="#" onclick="showPage('advisor'); closeSidebar()">🧼 Home</a>
   <a href="#" onclick="showPage('history'); closeSidebar()">🕒 Istoric</a>
   <a href="ai.html">🤖 AI Assistant</a>
+  <a href="#" onclick="showPage('faq'); closeSidebar()" class="sidebar-item">
+  <span class="icon">❓</span>
+  <span class="label">Probleme frecvente</span>
+</a>
 
   <a href="https://www.facebook.com/p/Drastorm-Produse-de-curățenie-61556579918590/"
      target="_blank">
@@ -1014,7 +1803,7 @@ body.dark .settings-card {
   <div class="top-btn hamburger" onclick="toggleSidebar()">☰</div>
 
   <div class="brand" onclick="goHome()">Clean Advisor</div>
-    <div id="user-email" style="margin-right:10px; font-size:14px; opacity:0.85;"></div>
+    <div id="user-email" class="user-email"></div>
 <div class="search-box">
   
   <input type="text" placeholder="Caută produse sau probleme (ex: calcar, baie)">
@@ -1026,84 +1815,176 @@ body.dark .settings-card {
     <div id="btn-dark" class="top-btn" onclick="toggleDarkMode()" title="Dark mode">
       🌙
     </div>
-
+<div id="btn-search" class="top-btn mobile-search-btn" onclick="toggleMobileSearch()" title="Caută">
+  🔍
+</div>
     <div id="btn-settings" class="top-btn" onclick="openSettings()" title="Setări">
       ⚙️
     </div>
   </div>
 </div>
 
-<!-- PAGE: page settings -->
-<div id="page-settings" class="page settings-page" style="display:none;">
-
-  <div class="settings-layout">
-
-    <!-- MENIU STÂNGA -->
-    <div class="settings-menu">
-      <button onclick="openSettingsTab('account')" class="active">👤 Cont</button>
-      <button onclick="openSettingsTab('preferences')">🎨 Preferințe</button>
-      <button onclick="openSettingsTab('privacy')">🔒 Date</button>
-      <button onclick="openSettingsTab('help')">❓ Ajutor</button>
+<!-- MOBILE SEARCH OVERLAY -->
+<div id="mobile-search-overlay" class="mobile-search-overlay" onclick="closeMobileSearch(event)">
+  <div class="mobile-search-modal" onclick="event.stopPropagation()">
+    
+    <div class="mobile-search-head">
+      <span style="font-weight:800;">Caută</span>
     </div>
 
-    <!-- CONȚINUT -->
-    <div class="settings-content">
+    <div class="mobile-search-input-wrap">
+      <input id="mobile-search-input" type="text" placeholder="Caută (ex: calcar, mucegai, baie)">
+      <div id="mobile-search-results" class="search-results mobile-results"></div>
+    </div>
 
-      <!-- CONT -->
-      <div id="settings-account" class="settings-panel active">
-        <div id="account-area"></div>
-      </div>
-
-      <!-- PREFERINȚE -->
-      <div id="settings-preferences" class="settings-panel">
-        <h2>🎨 Preferințe</h2>
-
-        <div class="settings-card">
-  <h4>🧠 Stil Asistent Inteligent</h4>
-
-  <select onchange="savePreference('aiStyle', this.value)">
-    <option value="rapid">Rapid</option>
-    <option value="detaliat">Detaliat</option>
-  </select>
+  </div>
 </div>
 
-<div class="settings-card">
-  <h4>🗣️ Ton răspuns</h4>
+<!-- PAGE: page settings -->
+<div id="page-settings" class="page settings-page" style="display:none;">
+  <div class="settings-layout">
 
-  <select onchange="savePreference('aiTone', this.value)">
-    <option value="scurt">Scurt</option>
-    <option value="explicat">Explicat</option>
-  </select>
+    <!-- STÂNGA (meniul) -->
+    <div class="settings-shell">
+      <div class="settings-menu">
+        <div class="menu-title">SETĂRI</div>
+
+        <button class="settings-tab active" onclick="openSettingsTab('account')" class="active">👤 Cont</button>
+        <button class="settings-tab" onclick="openSettingsTab('type')">🏷️ Tip cont</button>
+        <button class="settings-tab" onclick="openSettingsTab('preferences')">🎨 Preferințe</button>
+        <button class="settings-tab" onclick="openSettingsTab('privacy')">🔒 Date</button>
+        <button class="settings-tab" onclick="openSettingsTab('help')">❓ Ajutor</button>
+      </div>
+    </div>
+
+    <!-- DREAPTA (conținut) -->
+    <div class="settings-shell">
+      <div class="settings-content">
+
+        <!-- CONT -->
+        <div id="settings-account" class="settings-panel active">
+          <div class="settings-title">
+            <span style="font-size:22px;">👤</span>
+            <h2>Contul meu</h2>
+          </div>
+          <p class="settings-subtitle">Gestionează datele contului și accesul.</p>
+
+          <div id="account-area"></div>
+        </div>
+
+        <!-- TIP CONT -->
+        <div id="settings-type" class="settings-panel">
+          <div class="settings-title">
+            <span style="font-size:22px;">🏷️</span>
+            <h2>Tip cont</h2>
+          </div>
+          <p class="settings-subtitle">Ajustează recomandările (acasă vs. firmă).</p>
+
+          <div class="settings-card">
+            <div style="font-weight:900; margin-bottom:10px;">Selecție curentă</div>
+            <div id="type-current" style="font-size:18px; font-weight:900;"></div>
+            <button class="gdpr-btn primary" style="margin-top:12px;" onclick="showUserType()">
+              Alege / schimbă tipul
+            </button>
+          </div>
+        </div>
+
+        <!-- PREFERINȚE -->
+        <div id="settings-preferences" class="settings-panel">
+
+  <div class="settings-title">
+    <span style="font-size:22px;">🎨</span>
+    <h2>Preferințe</h2>
+  </div>
+
+  <p class="settings-subtitle">
+    Personalizează stilul răspunsurilor.
+  </p>
+
+  <!-- CARD 1 -->
+  <div class="settings-card pref-card">
+    <div class="pref-head">
+      🧠 Stil asistent inteligent
+    </div>
+
+    <p class="pref-desc">
+      Alege între răspuns rapid sau mai detaliat.
+    </p>
+
+    <select class="pref-select-orange" onchange="savePreference('aiStyle', this.value)">
+      <option value="rapid">Rapid</option>
+      <option value="detaliat">Detaliat</option>
+    </select>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="settings-card pref-card">
+    <div class="pref-head">
+      🗣️ Ton răspuns
+    </div>
+
+    <p class="pref-desc">
+      Răspuns scurt sau explicat în detaliu.
+    </p>
+
+    <select class="pref-select-orange" onchange="savePreference('aiTone', this.value)">
+      <option value="scurt">Scurt</option>
+      <option value="explicat">Explicat</option>
+    </select>
+  </div>
+
 </div>
 
-      </div>
+        <!-- DATE -->
+        <div id="settings-privacy" class="settings-panel">
+          <div class="settings-title">
+            <span style="font-size:22px;">🔒</span>
+            <h2>Date</h2>
+          </div>
+          <p class="settings-subtitle">Control pentru istoricul recomandărilor.</p>
 
-      <!-- DATE -->
-      <div id="settings-privacy" class="settings-panel">
-        <h2>🔒 Date & confidențialitate</h2>
-
-        <div class="settings-card">
-          <button onclick="localStorage.removeItem('history')">
-            🗑️ Șterge istoricul recomandărilor
-          </button>
+          <div class="settings-card">
+            <button onclick="localStorage.removeItem('history')">🗑️ Șterge istoricul recomandărilor</button>
+          </div>
         </div>
+
+        <!-- AJUTOR -->
+       <div id="settings-help" class="settings-panel">
+  <h2>❓ Ajutor</h2>
+
+  <div class="settings-card help-card">
+    <div class="settings-card-head">
+      <div class="icon-badge">❓</div>
+      <div>
+        <h4>Ajutor & contact</h4>
+        <p>Contact rapid și reguli de siguranță.</p>
       </div>
+    </div>
 
-      <!-- AJUTOR -->
-      <div id="settings-help" class="settings-panel">
-        <h2>❓ Ajutor</h2>
+    <div class="settings-card-body">
+      <a class="help-row" href="tel:0720714163">
+        <span class="help-ico">📞</span>
+        <span class="help-text">0720 714 163</span>
+      </a>
 
-        <div class="settings-card">
-          <p>📞 0720 714 163</p>
-          <p>📘 Facebook Drastorm</p>
-          <p>⚠️ Nu combina produse chimice</p>
-        </div>
+      <a class="help-row" href="https://www.facebook.com/p/Drastorm-Produse-de-curățenie-61556579918590/" target="_blank">
+        <span class="help-ico">📘</span>
+        <span class="help-text">Facebook Drastorm</span>
+      </a>
+
+      <div class="help-row warn">
+        <span class="help-ico">⚠️</span>
+        <span class="help-text"><strong>Regulă:</strong> Nu combina produse chimice.</span>
       </div>
-
     </div>
   </div>
 </div>
 
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <!-- PAGE: CLEAN ADVISOR -->
 <div id="page-advisor" class="page">
@@ -1113,12 +1994,13 @@ body.dark .settings-card {
     <div class="hero">
         <div class="hero-text">
             <h1>Clean Advisor</h1>
-            <p>Asistentul tău inteligent pentru curățenie.</p>
+            <p id="home-expert-text">Asistentul tău inteligent pentru curățenie.</p>
             <button onclick="goToAI()">Începe</button>
         </div>
         <img src="mascota.png" class="mascot">
     </div>
 </header>
+
 <div id="step1" style="display:none;">
 </div>
 
@@ -1197,6 +2079,17 @@ body.dark .settings-card {
 <div id="page-history" class="page">
   <h2>🕒 Istoric recomandări</h2>
   <div id="history-timeline"></div>
+</div>
+
+<!-- PAGE: FAQ -->
+<div id="page-faq" class="page">
+  <h2>❓ Probleme frecvente</h2>
+
+  <div class="faq-toolbar">
+    <input id="faq-search" type="text" placeholder="Caută: calcar, grăsime, mucegai..." oninput="renderFAQ()">
+  </div>
+
+  <div id="faq-list" class="faq-grid"></div>
 </div>
 
 <!-- PAGE: ABOUT -->
@@ -1283,6 +2176,10 @@ function showPage(page) {
     
 
   });
+  if (page === "history") loadHistory();
+  if (page === "faq") renderFAQ();
+  if (page === "history") loadHistory();
+  if (page === "advisor") updateHomeExpertText();
 }
 
 
@@ -1355,12 +2252,21 @@ function toggleDarkMode() {
 
   const isDark = document.body.classList.contains("dark");
   localStorage.setItem("darkMode", isDark ? "on" : "off");
+
+  // buton activ
+  const btn = document.getElementById("btn-dark");
+  if (btn) btn.classList.toggle("active", isDark);
+
+  // scoate active de pe setări (optional)
+  document.getElementById("btn-settings")?.classList.remove("active");
 }
 
 window.addEventListener("load", () => {
-  if (localStorage.getItem("darkMode") === "on") {
-    document.body.classList.add("dark");
-  }
+  const isDark = localStorage.getItem("darkMode") === "on";
+  document.body.classList.toggle("dark", isDark);
+
+  const btn = document.getElementById("btn-dark");
+  if (btn) btn.classList.toggle("active", isDark);
 });
 
 
@@ -1382,6 +2288,7 @@ function openSettings() {
 
   // altfel, le deschidem
   showPage('settings');
+  refreshUserTypeUI();
   btn.classList.add('active', 'rotate');
 
   document.getElementById('btn-dark').classList.remove('active');
@@ -1390,19 +2297,19 @@ function openSettings() {
     btn.classList.remove('rotate');
   }, 400);
 }
-function openSettingsTab(tab) {
-  // dezactivează toate
-  document.querySelectorAll('.settings-panel').forEach(p => {
-    p.classList.remove('active');
-  });
+function openSettingsTab(tab, btnEl) {
+  // ascunde toate panelurile
+  document.querySelectorAll(".settings-panel").forEach(p => p.classList.remove("active"));
 
-  document.querySelectorAll('.settings-menu button').forEach(b => {
-    b.classList.remove('active');
-  });
+  // scoate activ de pe toate butoanele
+  document.querySelectorAll(".settings-tab").forEach(b => b.classList.remove("active"));
 
-  // activează selectat
-  document.getElementById('settings-' + tab).classList.add('active');
-  event.target.classList.add('active');
+  // arată panelul cerut
+  const panel = document.getElementById("settings-" + tab);
+  if (panel) panel.classList.add("active");
+
+  // activează butonul apăsat
+  if (btnEl) btnEl.classList.add("active");
 }
 function goHome() {
   // închide setările dacă sunt deschise
@@ -1450,17 +2357,17 @@ function renderAccount() {
 
   const letter = user.email.charAt(0).toUpperCase();
 
-  container.innerHTML = `
-    <h2>👤 Contul meu</h2>
+ container.innerHTML = `
+  <div class="account-card">
+    <div class="avatar">${letter}</div>
 
-    <div class="account-card">
-      <div class="avatar">${letter}</div>
-
-      <button onclick="changePassword()">🔑 Schimbă parola</button>
-      <button class="danger" onclick="deleteAccount()">🗑️ Șterge cont</button>
-      <button onclick="logout()">🚪 Delogare</button>
+    <div class="btn-col">
+      <button class="settings-action primary" onclick="changePassword()">🔑 Schimbă parola</button>
+      <button class="settings-action danger" onclick="deleteAccount()">🗑️ Șterge cont</button>
+      <button class="settings-action ghost" onclick="logout()">🚪 Delogare</button>
     </div>
-  `;
+  </div>
+`;
 }
 function deleteAccount() {
   const confirmDelete = confirm(
@@ -1604,59 +2511,175 @@ function savePreference(key, value) {
   prefs[key] = value;
   localStorage.setItem("preferences", JSON.stringify(prefs));
 }
-const searchData = [
-  { label: "Baie – Calcar", action: () => showPage('advisor') },
-  { label: "Baie – Mucegai", action: () => showPage('advisor') },
-  { label: "Bucătărie – Grăsime", action: () => showPage('advisor') },
-  { label: "Geamuri – Urme", action: () => showPage('advisor') },
-  { label: "AI Assistant", action: () => window.location.href = "ai.html" },
-  { label: "Despre DRASTORM", action: () => showPage('about') }
+
+// ===== SEARCH SUGGESTIONS + SEARCH =====
+const searchSuggestions = [
+  { label: "Calcar pe baterie (Baie)", action: () => showPage("advisor") },
+  { label: "Mucegai pe rosturi (Baie)", action: () => showPage("advisor") },
+  { label: "Grăsime arsă pe aragaz (Bucătărie)", action: () => showPage("advisor") },
+  { label: "Urme pe geamuri / oglinzi", action: () => showPage("advisor") },
+  { label: "Pete pe canapea / textile", action: () => showPage("advisor") },
+  { label: "AI Assistant (întreabă direct)", action: () => (window.location.href = "ai.html") },
+  { label: "Despre DRASTORM", action: () => showPage("about") }
 ];
 
 const searchInput = document.querySelector(".search-box input");
 const resultsBox = document.getElementById("search-results");
 
-searchInput.addEventListener("input", () => {
-  const value = searchInput.value.toLowerCase();
+function renderSearchItems(items, title = "Recomandări") {
   resultsBox.innerHTML = "";
 
-  if (!value) {
-    resultsBox.style.display = "none";
-    return;
-  }
+  const header = document.createElement("div");
+  header.style.padding = "10px 14px";
+  header.style.fontSize = "12px";
+  header.style.opacity = "0.7";
+  header.style.fontWeight = "700";
+  header.textContent = title;
+  resultsBox.appendChild(header);
 
-  const matches = searchData.filter(item =>
-    item.label.toLowerCase().includes(value)
-  );
-
-  matches.forEach(item => {
+  items.forEach(item => {
     const div = document.createElement("div");
     div.className = "search-item";
-    div.innerText = item.label;
-    div.onclick = () => {
+    div.textContent = item.label;
+    div.addEventListener("click", () => {
       item.action();
       resultsBox.style.display = "none";
       searchInput.value = "";
-    };
+    });
     resultsBox.appendChild(div);
   });
 
-  resultsBox.style.display = matches.length ? "block" : "none";
+  resultsBox.style.display = items.length ? "block" : "none";
+}
+
+// focus/click -> recomandări dacă e gol
+function showSuggestionsIfEmpty() {
+  if (!searchInput.value.trim()) {
+    renderSearchItems(searchSuggestions.slice(0, 7), "Recomandări rapide");
+  }
+}
+
+searchInput.addEventListener("focus", showSuggestionsIfEmpty);
+searchInput.addEventListener("click", showSuggestionsIfEmpty);
+
+// când tastezi -> filtrează
+searchInput.addEventListener("input", () => {
+  const value = searchInput.value.toLowerCase().trim();
+
+  if (!value) {
+    renderSearchItems(searchSuggestions.slice(0, 7), "Recomandări rapide");
+    return;
+  }
+
+  const matches = searchSuggestions.filter(item =>
+    item.label.toLowerCase().includes(value)
+  );
+
+  renderSearchItems(matches.slice(0, 10), "Rezultate");
 });
-document.addEventListener("click", e => {
+
+// click în afară -> închide
+document.addEventListener("click", (e) => {
   if (!e.target.closest(".search-box")) {
     resultsBox.style.display = "none";
   }
 });
 
+// ===== FAQ DATA =====
+const FAQ_ITEMS = [
+  {
+    title: "Calcar pe baterie / duș",
+    tags: ["Baie", "Calcar"],
+    desc: "Depuneri albe, tari, pe baterii, duș, sticlă sau faianță.",
+    prompt: "Am calcar pe baterie la baie. Cum îl curăț corect și ce soluție îmi recomanzi?"
+  },
+  {
+    title: "Mucegai pe rosturi / silicon",
+    tags: ["Baie", "Mucegai"],
+    desc: "Puncte negre pe silicon, rosturi, colțuri cu umiditate mare.",
+    prompt: "Am mucegai pe rosturi/silicon în baie. Ce pași să urmez și ce soluție e sigură?"
+  },
+  {
+    title: "Grăsime arsă pe aragaz / hotă",
+    tags: ["Bucătărie", "Grăsime"],
+    desc: "Grăsime veche sau arsă pe aragaz, cuptor, hotă, faianță.",
+    prompt: "Am grăsime arsă pe aragaz/hotă. Cum o scot rapid și fără să stric suprafața?"
+  },
+  {
+    title: "Urme pe geamuri / oglindă",
+    tags: ["Geamuri", "Urme"],
+    desc: "Dâre și urme după șters geamuri, oglindă, vitrină.",
+    prompt: "Îmi rămân urme pe geamuri/oglindă după curățare. Cum procedez ca să iasă perfect?"
+  },
+  {
+    title: "Inox pătat (chiuvetă / electrocasnice)",
+    tags: ["Bucătărie", "Inox"],
+    desc: "Pete, amprente sau dungi pe inox (chiuvetă, frigider, cuptor).",
+    prompt: "Am inox pătat (chiuvetă/electrocasnice). Cum îl curăț și ce recomandări ai?"
+  },
+  {
+    title: "Mișcări / mirosuri în baie (scurgeri)",
+    tags: ["Baie", "Scurgere"],
+    desc: "Miros neplăcut din scurgere, depuneri, întreținere periodică.",
+    prompt: "Am miros urât din scurgerea de la baie. Cum curăț și întrețin scurgerea corect?"
+  }
+];
+
+// ===== RENDER FAQ =====
+function renderFAQ() {
+  const list = document.getElementById("faq-list");
+  if (!list) return;
+
+  const q = (document.getElementById("faq-search")?.value || "").toLowerCase();
+
+  const filtered = FAQ_ITEMS.filter(item => {
+    const hay = (item.title + " " + item.desc + " " + item.tags.join(" ")).toLowerCase();
+    return hay.includes(q);
+  });
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<p style="opacity:0.75;">Nu am găsit nimic. Încearcă alt cuvânt (ex: calcar, grăsime).</p>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(item => `
+    <div class="faq-card">
+      <h3>${item.title}</h3>
+      <div class="faq-tags">
+        ${item.tags.map(t => `<span class="faq-tag">${t}</span>`).join("")}
+      </div>
+      <p>${item.desc}</p>
+      <div class="faq-actions">
+        <button class="faq-btn primary" onclick="askAIFromFAQ(${encodeURIComponent(JSON.stringify(item.prompt))})">
+          🤖 Întreabă AI
+        </button>
+        <button class="faq-btn ghost" onclick="copyText(${encodeURIComponent(JSON.stringify(item.prompt))})">
+          📋 Copiază
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function askAIFromFAQ(promptText) {
+  // salvăm promptul ca să fie preluat în ai.html
+  localStorage.setItem("aiPrefill", promptText);
+  window.location.href = "ai.html";
+}
+
+function copyText(text) {
+  navigator.clipboard?.writeText(text);
+  alert("Am copiat întrebarea ✅");
+}
 
 function goToAI() {
   window.location.href = "ai.html";
 }
 
 window.addEventListener("load", () => {
-  showPage('advisor');
   renderAccount();
+  refreshUserTypeUI();
+  
 });
 const user = JSON.parse(localStorage.getItem("user"));
 const userEmailEl = document.getElementById("user-email");
@@ -1664,10 +2687,141 @@ const userEmailEl = document.getElementById("user-email");
 if (user && user.email) {
   userEmailEl.innerText = "👤 " + user.email;
 }
-showPage('history');
-loadHistory();
+  function toggleMobileSearch(){
+  const overlay = document.getElementById("mobile-search-overlay");
+  const input = document.getElementById("mobile-search-input");
+  overlay.classList.toggle("show");
 
+  if (overlay.classList.contains("show")) {
+    setTimeout(() => input.focus(), 50);
+    // arată recomandări când deschizi
+    renderMobileSearchItems(searchSuggestions.slice(0, 7), "Recomandări rapide");
+  }
+}
 
+function closeMobileSearch(e){
+  // se închide doar dacă dai click pe fundal (overlay)
+  const overlay = document.getElementById("mobile-search-overlay");
+  overlay.classList.remove("show");
+}
+
+function renderMobileSearchItems(items, title="Recomandări"){
+  const box = document.getElementById("mobile-search-results");
+  const input = document.getElementById("mobile-search-input");
+
+  box.innerHTML = "";
+
+  const header = document.createElement("div");
+  header.style.padding = "10px 14px";
+  header.style.fontSize = "12px";
+  header.style.opacity = "0.7";
+  header.style.fontWeight = "700";
+  header.textContent = title;
+  box.appendChild(header);
+
+  items.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "search-item";
+    div.textContent = item.label;
+    div.onclick = () => {
+      item.action();
+      box.style.display = "none";
+      input.value = "";
+      document.getElementById("mobile-search-overlay").classList.remove("show");
+    };
+    box.appendChild(div);
+  });
+
+  box.style.display = items.length ? "block" : "none";
+}
+
+// input mobil
+window.addEventListener("load", () => {
+  const input = document.getElementById("mobile-search-input");
+  const box = document.getElementById("mobile-search-results");
+  if (!input || !box) return;
+
+  input.addEventListener("input", () => {
+    const value = input.value.toLowerCase().trim();
+    if (!value) {
+      renderMobileSearchItems(searchSuggestions.slice(0, 7), "Recomandări rapide");
+      return;
+    }
+
+    const matches = searchSuggestions.filter(item =>
+      item.label.toLowerCase().includes(value)
+    );
+
+    renderMobileSearchItems(matches.slice(0, 10), "Rezultate");
+  });
+});
+function showUserType() {
+  const overlay = document.getElementById("user-type-overlay");
+  if (!overlay) return;
+
+  // activează overlay
+  overlay.classList.add("show");
+  overlay.setAttribute("aria-hidden", "false");
+
+  // ✅ evidențiază alegerea salvată
+  const t = localStorage.getItem("userType");
+  const b1 = document.getElementById("btn-personal");
+  const b2 = document.getElementById("btn-business");
+  if (!b1 || !b2) return;
+
+  // reset
+  b1.classList.remove("primary"); b1.classList.add("ghost");
+  b2.classList.remove("primary"); b2.classList.add("ghost");
+
+  if (t === "business") {
+    b2.classList.remove("ghost"); b2.classList.add("primary");
+  } else if (t === "personal") {
+    b1.classList.remove("ghost"); b1.classList.add("primary");
+  }
+}
+
+function hideUserType() {
+  if (document.activeElement) document.activeElement.blur();
+
+  const overlay = document.getElementById("user-type-overlay");
+  if (!overlay) return;
+
+  overlay.classList.remove("show");
+  overlay.setAttribute("aria-hidden", "true");
+}
+
+function chooseUserType(type) {
+  localStorage.setItem("userType", type);
+  hideUserType();
+  showPage("advisor");
+  updateHomeExpertText(); 
+}
+function openUserTypeFromSettings() {
+  showUserType();
+}
+
+function refreshUserTypeUI(){
+  const el = document.getElementById("type-current");
+  if (!el) return;
+
+  const t = localStorage.getItem("userType");
+  if (t === "business") el.textContent = "🏢 Persoană juridică";
+  else if (t === "personal") el.textContent = "🏠 Persoană fizică";
+  else el.textContent = "Neselectat";
+}
+function updateHomeExpertText() {
+  const el = document.getElementById("home-expert-text");
+  if (!el) return;
+
+  const type = localStorage.getItem("userType"); // "personal" / "business"
+
+  if (type === "business") {
+    el.textContent = "Asistenul tău AI pentru firme (persoane juridice).";
+  } else if (type === "personal") {
+    el.textContent = "Asistenul tău AI pentru case (persoane fizice).";
+  } 
+
+}
 </script>
 
 <footer class="footer">
@@ -1726,6 +2880,95 @@ loadHistory();
   </div>
 </footer>
 
+<script>
+  // ===== GDPR SETTINGS STORAGE =====
+  // schema:
+  // gdpr = { necessary: true, analytics: true/false, ts: "ISO" }
+  function getGdpr() {
+    try { return JSON.parse(localStorage.getItem("gdprConsent")); }
+    catch { return null; }
+  }
 
+  function setGdpr(consent) {
+    localStorage.setItem("gdprConsent", JSON.stringify(consent));
+  }
+
+  function showGdpr() {
+  const overlay = document.getElementById("gdpr-overlay");
+  if (!overlay) return;
+
+  overlay.setAttribute("aria-hidden", "false");
+  overlay.classList.add("show");
+}
+
+ function hideGdpr() {
+  if (document.activeElement) document.activeElement.blur();
+
+  const overlay = document.getElementById("gdpr-overlay");
+  if (!overlay) return;
+
+  overlay.classList.remove("show");
+  overlay.setAttribute("aria-hidden", "true");
+
+  // ✅ MEREU cere tipul de utilizator
+  showUserType();
+}
+
+  // ===== GOOGLE ANALYTICS LOADER (BLOCKED UNTIL CONSENT) =====
+  // IMPORTANT: pune ID-ul tău GA4 aici când îl ai: "G-XXXXXXX"
+  const GA_ID = "G-XXXXXXXXXX";
+
+  function loadGoogleAnalytics() {
+    // nu încărcăm dacă nu ai setat ID-ul
+    if (!GA_ID || GA_ID.includes("XXXX")) return;
+
+    // evită încărcarea de 2 ori
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+
+    // 1) script gtag
+    const s1 = document.createElement("script");
+    s1.async = true;
+    s1.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(GA_ID);
+    document.head.appendChild(s1);
+
+    // 2) init gtag
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    window.gtag = gtag;
+
+    gtag("js", new Date());
+    gtag("config", GA_ID, { anonymize_ip: true });
+  }
+
+  // ===== BUTTON HANDLERS =====
+  function gdprAcceptAll() {
+  const analytics = document.getElementById("gdpr-analytics")?.checked ?? true;
+  setGdpr({ necessary: true, analytics: !!analytics, ts: new Date().toISOString() });
+
+  hideGdpr();
+
+  if (analytics) loadGoogleAnalytics();
+
+}
+
+  function gdprNecessary() {
+  setGdpr({ necessary: true, analytics: false, ts: new Date().toISOString() });
+
+  hideGdpr();
+
+}
+
+  function gdprReject() {
+  setGdpr({ necessary: true, analytics: false, ts: new Date().toISOString() });
+
+  hideGdpr();
+
+}
+
+  window.addEventListener("load", () => {
+    showGdpr();
+});
+</script>
 </body>
 </html>
