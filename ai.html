@@ -621,18 +621,62 @@ body.dark .brand-sub {
     const chat = document.getElementById("chat-messages");
 const input = document.getElementById("user-input");
 
-let aiStep = 0;
-let data = {};
+let convo = JSON.parse(localStorage.getItem("aiConvo")) || [];
 
-window.onload = () => {
-  aiSpeak("Salut 👋");
-  aiTyping(() => aiSpeak("Spune-mi cu ce problemă te pot ajuta."));
-};
+async function processAI(userText) {
+  // 1) salvăm mesajul user în conversație
+  convo.push({ role: "user", content: userText });
+
+  // 2) trimitem doar ultimele mesaje (ca să nu fie prea lung)
+  const lastMessages = convo.slice(-12);
+
+  try {
+    const res = await fetch("http://localhost:3000/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: lastMessages })
+    });
+
+    const data = await res.json();
+    const reply = data.reply || "Nu am un răspuns acum.";
+
+    // 3) afișăm răspunsul AI
+    aiSpeak(reply);
+
+    // 4) salvăm răspunsul în conversație
+    convo.push({ role: "assistant", content: reply });
+    localStorage.setItem("aiConvo", JSON.stringify(convo));
+
+    // 5) salvăm în istoric pentru index.html
+    saveToHistory(userText, reply);
+
+  } catch (e) {
+    aiSpeak("⚠️ Nu pot contacta AI serverul. Pornește serverul: <strong>node server.js</strong>.");
+  }
+}
+window.addEventListener("load", () => {
+  const prefill = localStorage.getItem("aiPrefill");
+  if (prefill) {
+    input.value = prefill;
+    input.focus();
+    localStorage.removeItem("aiPrefill");
+  }
+});
+window.addEventListener("load", () => {
+  // dark mode sincronizat
+  if (localStorage.getItem("darkMode") === "on") {
+    document.body.classList.add("dark");
+  }
+
+  // greeting
+  aiSpeak("Salut 👋 Sunt <strong>DRASTORM AI</strong>.");
+  aiTyping(() => aiSpeak("Spune-mi ce vrei să cureți și ce problemă ai. Exemplu: „calcar pe baterie” sau „grăsime pe aragaz”."));
+});
 
 function aiSpeak(text) {
   const msg = document.createElement("div");
   msg.className = "chat-ai";
-  msg.innerText = text;
+  msg.innerHTML = text;
   chat.appendChild(msg);
   scrollChat();
 }
@@ -667,45 +711,207 @@ function sendMessage() {
 
   aiTyping(() => processAI(text));
 }
+// ====== DRASTORM AI OFFLINE ENGINE (FREE) ======
+const state = JSON.parse(localStorage.getItem("offlineAiState")) || {
+  lastSurface: null,
+  lastProblem: null,
+  lastMaterial: null
+};
 
-function processAI(text) {
-  if (aiStep === 0) {
-    data.surface = text;
-    aiSpeak("Ce problemă apare? (calcar, grăsime, mucegai)");
-    aiStep++;
+const surfaces = [
+  { k: "baie", syn: ["baie", "cabina", "dus", "chiuveta", "cada", "wc", "toaleta"] },
+  { k: "bucatarie", syn: ["bucatarie", "aragaz", "plită", "plita", "hota", "cuptor", "chiuveta"] },
+  { k: "geamuri", syn: ["geam", "geamuri", "oglinda", "oglinzi", "sticla"] },
+  { k: "podea", syn: ["podea", "gresie", "faianță", "faianta", "parchet"] },
+  { k: "metal", syn: ["baterie", "robinet", "inox", "metal", "chiuveta inox"] },
+];
+
+const materials = [
+  { k: "marmura", syn: ["marmura", "travertin", "piatra naturala", "piatră naturală"] },
+  { k: "inox", syn: ["inox"] },
+  { k: "aluminiu", syn: ["aluminiu"] },
+  { k: "lemn", syn: ["lemn", "parchet"] },
+];
+
+const problems = [
+  { k: "calcar", syn: ["calcar", "piatra", "depuneri", "depunei", "pete albe"] },
+  { k: "grasime", syn: ["grasime", "grăsime", "ulei", "lipicios"] },
+  { k: "mucegai", syn: ["mucegai", "fungi", "ciuperca", "ciuperci", "negru pe silicon"] },
+  { k: "rugina", syn: ["rugina", "rugină"] },
+  { k: "urme", syn: ["urme", "dungi", "pete", "amprente"] },
+  { k: "miros", syn: ["miros", "pute", "iz", "urât"] },
+];
+
+const dangerMix = [
+  { a: ["clor", "hipoclorit", "domestos", "ace"], b: ["otet", "oțet", "acid", "anticalcar"], msg: "⚠️ Nu combina produse pe bază de clor cu oțet/anticalcar (acizi) — pot rezulta gaze toxice." },
+  { a: ["clor", "hipoclorit", "domestos"], b: ["amoniac"], msg: "⚠️ Nu combina clor cu amoniac — pot rezulta gaze toxice." },
+];
+
+function norm(s) {
+  return (s || "").toLowerCase().trim();
+}
+
+function containsAny(text, arr) {
+  const t = norm(text);
+  return arr.some(x => t.includes(x));
+}
+
+function detectCategory(text, list) {
+  const t = norm(text);
+  for (const item of list) {
+    for (const w of item.syn) {
+      if (t.includes(norm(w))) return item.k;
+    }
+  }
+  return null;
+}
+
+function safetyScan(text) {
+  const t = norm(text);
+  for (const rule of dangerMix) {
+    if (containsAny(t, rule.a) && containsAny(t, rule.b)) {
+      return rule.msg;
+    }
+  }
+  return null;
+}
+
+function buildAnswer({ surface, problem, material }) {
+  // defaults
+  const s = surface || "zona";
+  const p = problem || "murdăria";
+  const m = material || null;
+
+  // special warnings
+  let extraWarn = "";
+  if (m === "marmura" && (p === "calcar" || containsAny(p, ["calcar"]))) {
+    extraWarn = "⚠️ Atenție: pe marmură/piatră naturală NU folosi anticalcar acid. Folosește doar soluții pH neutru.";
+  }
+
+  // templates
+  const steps = [];
+  const products = [];
+
+  if (p === "calcar") {
+    steps.push("Umezește zona și aplică anticalcar (sau soluție pe bază de acid citric) doar pe metal/ceramică.");
+    steps.push("Lasă 2–5 minute (nu lăsa să se usuce).");
+    steps.push("Freacă ușor cu burete non-abraziv / perie moale și clătește bine.");
+    steps.push("Șterge cu microfibră pentru luciu.");
+    products.push("Anticalcar");
+    products.push("Burete non-abraziv");
+    products.push("Laveta microfibră");
+  } else if (p === "grasime") {
+    steps.push("Aplică degresant pe suprafață.");
+    steps.push("Lasă 1–3 minute.");
+    steps.push("Șterge cu burete/lavetă și repetă dacă e nevoie.");
+    steps.push("Clătește și usucă.");
+    products.push("Degresant");
+    products.push("Laveta microfibră");
+  } else if (p === "mucegai") {
+    steps.push("Aerisește bine încăperea și poartă mănuși.");
+    steps.push("Aplică soluție anti-mucegai direct pe zonele afectate.");
+    steps.push("Lasă 10–15 minute, apoi freacă ușor și clătește.");
+    steps.push("Usucă zona și menține ventilația (previne reapariția).");
+    products.push("Soluție anti-mucegai");
+    products.push("Mănuși");
+    products.push("Perie mică");
+  } else if (p === "rugina") {
+    steps.push("Aplică soluție pentru rugină (sau pastă ușor abrazivă pentru metal potrivită).");
+    steps.push("Lasă câteva minute, freacă ușor, apoi clătește.");
+    steps.push("Usucă bine ca să nu reapară.");
+    products.push("Soluție pentru rugină");
+    products.push("Laveta microfibră");
+  } else if (p === "urme") {
+    steps.push("Pulverizează soluție de geamuri / multi-suprafețe.");
+    steps.push("Șterge cu microfibră curată, apoi lustruiește cu o microfibră uscată.");
+    products.push("Soluție geamuri");
+    products.push("Microfibră (2 bucăți)");
+  } else {
+    steps.push("Spune-mi ce suprafață este (ex: inox, ceramică, sticlă) și ce fel de murdărie vezi (calcar, grăsime, mucegai).");
+    products.push("—");
+  }
+
+  const warn = [
+    "⚠️ Nu amesteca produse chimice între ele.",
+    "Testează întâi pe o zonă mică dacă suprafața e sensibilă."
+  ];
+
+  if (extraWarn) warn.unshift(extraWarn);
+
+  const html = `
+  <strong>Recomandare pentru:</strong> ${s}${m ? ` (${m})` : ""}<br>
+  <strong>Problemă:</strong> ${p}<br><br>
+
+  <strong>✅ Ce să faci:</strong>
+  <ol>
+    ${steps.map(x => `<li>${x}</li>`).join("")}
+  </ol>
+
+  <strong>🧴 Produse tip recomandate:</strong>
+  <ul>
+    ${products.map(x => `<li>${x}</li>`).join("")}
+  </ul>
+
+  <strong>⚠️ Atenție:</strong>
+  <ul>
+    ${warn.map(x => `<li>${x}</li>`).join("")}
+  </ul>
+  `;
+
+  return html;
+}
+
+function resetOfflineAI() {
+  localStorage.removeItem("offlineAiState");
+  localStorage.removeItem("aiConvo");
+  aiSpeak("✅ Am resetat conversația. Spune-mi ce vrei să cureți.");
+}
+
+function saveState() {
+  localStorage.setItem("offlineAiState", JSON.stringify(state));
+}
+
+function processAI(userText) {
+  const t = norm(userText);
+
+  // safety scan (mixing chemicals)
+  const warn = safetyScan(t);
+  if (warn) {
+    aiSpeak(warn + "<br><br>Spune-mi ce vrei să cureți și ce produs ai folosit deja, ca să-ți zic varianta sigură.");
     return;
   }
 
-  if (aiStep === 1) {
-    data.problem = text;
-    aiSpeak("Cât de murdar este? (ușor, mediu, foarte murdar)");
-    aiStep++;
+  // detect
+  const detectedSurface = detectCategory(t, surfaces);
+  const detectedProblem = detectCategory(t, problems);
+  const detectedMaterial = detectCategory(t, materials);
+
+  if (detectedSurface) state.lastSurface = detectedSurface;
+  if (detectedProblem) state.lastProblem = detectedProblem;
+  if (detectedMaterial) state.lastMaterial = detectedMaterial;
+  saveState();
+
+  // If we don't have enough info, ask a natural follow-up
+  if (!state.lastProblem && !detectedProblem) {
+    aiSpeak("Am înțeles. Ce fel de problemă e? (calcar, grăsime, mucegai, rugină, urme)");
     return;
   }
 
-  if (aiStep === 2) {
-    data.level = text;
-    const recommendation = 
-  `Suprafață: ${data.surface}, Problemă: ${data.problem}, Nivel: ${data.level}`;
-
-aiSpeak(
-  `✔ Am înțeles.
-   Îți recomand o soluție profesională DRASTORM potrivită.`
-);
-
-// 🔥 SALVARE ISTORIC
-saveToHistory(
-  `Suprafață: ${data.surface}, Problemă: ${data.problem}, Nivel: ${data.level}`,
-  `
-  <strong>Suprafață:</strong> ${data.surface}<br>
-  <strong>Problemă:</strong> ${data.problem}<br>
-  <strong>Nivel:</strong> ${data.level}
-  `
-);
-
-
-    aiStep++;
+  // If surface unclear, ask
+  if (!state.lastSurface && !detectedSurface) {
+    aiSpeak("Pe ce suprafață e problema? (ex: baterie/robinet, gresie/faianță, aragaz, geam, chiuvetă)");
+    return;
   }
+
+  // Build answer
+  const reply = buildAnswer({
+    surface: state.lastSurface,
+    problem: state.lastProblem,
+    material: state.lastMaterial
+  });
+
+  aiSpeak(reply);
+  saveToHistory(userText, reply);
 }
 
 function scrollChat() {
@@ -736,12 +942,6 @@ function saveToHistory(userText, aiText) {
   localStorage.setItem("history", JSON.stringify(history));
 }
 
-
-window.addEventListener("load", () => {
-  if (localStorage.getItem("darkMode") === "on") {
-    document.body.classList.add("dark");
-  }
-});
 
 </script>
 <footer>
